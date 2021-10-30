@@ -1,8 +1,7 @@
 import React, {useState} from "react";
 import './styles/app.css';
 import PostList from "./components/PostList";
-import MyButton from "./components/UI/button/MyButton";
-import MyInput from "./components/UI/input/MyInput";
+import PostForm from "./components/PostForm";
 
 function App() {
 
@@ -12,47 +11,21 @@ function App() {
         {id: 3, title: 'C++', body: 'Description'}
     ])
 
-    const [title, setTitle] = useState('');
-    const [body, setBody] = useState('');
+    const createPost = (newPost) => {
+        setPosts([...posts, newPost])
+    }
 
-    // Using this hook we can directly get access to the element from DOM.
-    // This hook must be passed to the attribute "ref" inside the element to be accessed
-    // const bodyInputRef = useRef();
-
-    const addNewPost = (e) => {
-        e.preventDefault();
-        const newPost = {
-            id: Date.now(),
-            title,
-            body
-        }
-        setPosts([...posts, newPost]);
-        //?????
-        setTitle(' ');
-        setBody(' ');
+    const removePost = (post) => {
+        setPosts(posts.filter(p => p.id !== post.id))
     }
 
   return (
     <div className="App">
-        <form>
-
-            <MyInput
-                type="text"
-                placeholder="Title"
-                onChange={event => setTitle(event.target.value)}/>
-            <MyInput
-                type="text"
-                placeholder="Description"
-                onChange={event => setBody(event.target.value)}/>
-
-            {/*Unruled element - НЕУПРАВЛЯЕМЫЙ*/}
-            {/*<MyInput*/}
-            {/*    ref={bodyInputRef}*/}
-            {/*    type="text"*/}
-            {/*    placeholder="Description"/>*/}
-            <MyButton onClick={addNewPost}>Add post</MyButton>
-        </form>
-        <PostList posts={posts}/>
+        <PostForm create={createPost}/>
+        {posts.length > 0
+            ? <PostList remove={removePost} posts={posts}/>
+            : <h1 style={{textAlign: 'center', marginTop: '10px'}}>Posts is not found!</h1>
+        }
     </div >
   );
 }
