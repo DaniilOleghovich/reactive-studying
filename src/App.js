@@ -42,7 +42,7 @@ function App() {
 
     useEffect(() => {
         fetchPost();
-        }, [])
+    }, [])
 
     async function fetchPost() {
         setIsPostLoading(true);
@@ -62,22 +62,22 @@ function App() {
         setPosts(posts.filter(p => p.id !== post.id))
     }
 
-  return (
-    <div className="App">
-        <MyButton style={{marginTop: 30}} onClick={() => setModal(true)}>
-            Create post
-        </MyButton>
-        <MyModal visible={modal} setVisible={setModal}>
-            <PostForm create={createPost}/>
-        </MyModal>
-        <hr style={{margin: '15px 0'}}/>
-        <PostFilter filter={filter} setFilter={setFilter}/>
-        { isPostLoading
-            ? <div style={{display: 'flex', justifyContent: 'center', marginTop: '50px'}}><Loader/></div>
-            : <PostList remove={removePost} posts={sortedAndSearchedPosts}/>
-        }
-    </div >
-  );
+    return (
+        <div className="App">
+            <MyButton style={{marginTop: 30}} onClick={() => setModal(true)}>
+                Create post
+            </MyButton>
+            <MyModal visible={modal} setVisible={setModal}>
+                <PostForm create={createPost}/>
+            </MyModal>
+            <hr style={{margin: '15px 0'}}/>
+            <PostFilter filter={filter} setFilter={setFilter}/>
+            { isPostLoading
+                ? <div style={{display: 'flex', justifyContent: 'center', marginTop: '50px'}}><Loader/></div>
+                : <PostList remove={removePost} posts={sortedAndSearchedPosts}/>
+            }
+        </div >
+    );
 }
 
 export default App;
