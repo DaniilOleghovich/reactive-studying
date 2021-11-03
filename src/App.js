@@ -6,7 +6,8 @@ import PostFilter from "./components/PostFilter";
 import MyModal from "./components/UI/MyModal/MyModal";
 import MyButton from "./components/UI/button/MyButton";
 import {usePosts} from "./components/hooks/usePosts";
-import axios from "axios";
+import PostService from "./components/API/PostService";
+import Loader from "./components/UI/Loader/Loader";
 
 function App() {
 
@@ -15,6 +16,7 @@ function App() {
     const [filter, setFilter] = useState({sort: '', query: ''});
     const [modal, setModal] = useState(false);
     const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query);
+    const [isPostLoading, setIsPostLoading] = useState(false);
 
     //  This hook using lifecycles of React components. There are 3 lifecycles:
     //  1) Mount - when component is mounting to the DOM;
@@ -43,8 +45,12 @@ function App() {
         }, [])
 
     async function fetchPost() {
-        const response = await axios.get('https://jsonplaceholder.typicode.com/posts');
-        setPosts(response.data);
+        setIsPostLoading(true);
+        setTimeout(async () => {
+            const posts = await PostService.getAll();
+            setPosts(posts);
+            setIsPostLoading(false);
+        }, 1000)
     }
 
     const createPost = (newPost) => {
@@ -66,7 +72,10 @@ function App() {
         </MyModal>
         <hr style={{margin: '15px 0'}}/>
         <PostFilter filter={filter} setFilter={setFilter}/>
-        <PostList remove={removePost} posts={sortedAndSearchedPosts}/>
+        { isPostLoading
+            ? <div style={{display: 'flex', justifyContent: 'center', marginTop: '50px'}}><Loader/></div>
+            : <PostList remove={removePost} posts={sortedAndSearchedPosts}/>
+        }
     </div >
   );
 }
