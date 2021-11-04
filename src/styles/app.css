@@ -49,6 +49,8 @@
 }
 
 .page__current {
+    padding: 10px;
     border: 2px solid orange;
     font-weight: bold;
+    cursor: pointer;
 }

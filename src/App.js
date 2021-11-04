@@ -11,6 +11,7 @@ import Loader from "./components/UI/Loader/Loader";
 import {useFetching} from "./components/hooks/useFetching";
 import {getPageCount} from "./utils/pages";
 import {usePagination} from "./components/hooks/usePagination";
+import MyPagination from "./components/UI/pagination/MyPagination";
 
 function App() {
 
@@ -23,17 +24,7 @@ function App() {
     const [page, setPage] = useState(1);
     const sortedAndSearchedPosts = usePosts(posts, filter.sort, filter.query);
 
-    let pageArray = usePagination(totalPages);
-    // for(let i = 0; i< totalPages; i++) {
-    //     pageArray.push(i + 1);
-    // }
-
-
-
-
-    console.log(pageArray);
-
-    const [fetchPost, isPostLoading, postError] = useFetching(async () => {
+    const [fetchPost, isPostLoading, postError] = useFetching(async (limit, page) => {
         const response = await PostService.getAll(limit, page);
         setPosts(response.data);
         const totalCount = response.headers['x-total-count'];
@@ -62,7 +53,7 @@ function App() {
     //     }, [])
 
     useEffect(() => {
-        fetchPost();
+        fetchPost(limit, page);
     }, [])
 
     const createPost = (newPost) => {
@@ -76,7 +67,7 @@ function App() {
 
     const changePage = (page) => {
         setPage(page);
-        fetchPost();
+        fetchPost(limit, page);
     }
 
     return (
@@ -96,16 +87,12 @@ function App() {
                 ? <div style={{display: 'flex', justifyContent: 'center', marginTop: '50px'}}><Loader/></div>
                 : <PostList remove={removePost} posts={sortedAndSearchedPosts}/>
             }
-            <div className="page__wrapper">
-                {pageArray.map(p =>
-                    <span
-                        onClick={()=> changePage(p)}
-                        key={p}
-                        className={page === p ? 'page page__current' : 'page'}>
-                        {p}
-                    </span>
-                )}
-            </div>
+            <MyPagination
+                changePage={changePage}
+                page={page}
+                totalPage={totalPages}
+            />
+
         </div >
     );
 }
